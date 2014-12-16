@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.easemob.dataexport.util;
+package com.easemob.dataexport.utils;
 
 
 import java.util.Collections;
@@ -38,9 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.codec.binary.Base64.decodeBase64;
 import static org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString;
-
-import static com.easemob.dataexport.util.ConversionUtils.bytes;
-import static com.easemob.dataexport.util.ConversionUtils.uuid;
+import static com.easemob.dataexport.utils.ConversionUtils.bytes;
+import static com.easemob.dataexport.utils.ConversionUtils.uuid;
 
 public class UUIDUtils {
     private static final Logger LOG = LoggerFactory.getLogger( UUIDUtils.class );

@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.easemob.dataexport;
+package com.easemob.dataexport.security;
 
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.easemob.dataexport.util.CodecUtils.base64;
+import static com.easemob.dataexport.utils.CodecUtils.base64;
 
 public enum AuthPrincipalType {
     ORGANIZATION( "ou", "group" ), ADMIN_USER( "ad", "user" ),

@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.easemob.dataexport.util;
+package com.easemob.dataexport.utils;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
-import static com.easemob.dataexport.util.ConversionUtils.string;
+import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.ConversionUtils.string;
 
 
 public class StringUtils extends org.apache.commons.lang.StringUtils {

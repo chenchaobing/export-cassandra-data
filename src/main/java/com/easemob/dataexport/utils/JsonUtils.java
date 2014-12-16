@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.easemob.dataexport.util;
+package com.easemob.dataexport.utils;
 
 
 import java.io.File;
@@ -40,7 +40,7 @@ import com.easemob.dataexport.exception.JsonReadException;
 import com.easemob.dataexport.exception.JsonWriteException;
 
 import static org.apache.commons.lang.StringUtils.substringAfter;
-import static com.easemob.dataexport.util.StringUtils.stringOrSubstringBeforeFirst;
+import static com.easemob.dataexport.utils.StringUtils.stringOrSubstringBeforeFirst;
 
 
 public class JsonUtils {

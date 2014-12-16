@@ -9,11 +9,11 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.easemob.dataexport.cache.RedisApI;
-import com.easemob.dataexport.cassandra.Serializers;
+import com.easemob.dataexport.serializers.Serializers;
 
-import static com.easemob.dataexport.util.StringUtils.hexToBytes;
-import static com.easemob.dataexport.util.JsonUtils.toObjectNode;
-import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
+import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
 
 public class ExportUserUuid {
 

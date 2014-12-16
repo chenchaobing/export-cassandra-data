@@ -1,9 +1,9 @@
 package com.easemob.dataexport;
 
-import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
-import static com.easemob.dataexport.util.JsonUtils.toObjectNode;
-import static com.easemob.dataexport.util.StringUtils.hexToByteBuffer;
-import static com.easemob.dataexport.util.StringUtils.hexToBytes;
+import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
+import static com.easemob.dataexport.utils.StringUtils.hexToByteBuffer;
+import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -16,8 +16,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.easemob.dataexport.cassandra.Serializers;
-import com.easemob.dataexport.util.Schema;
+import com.easemob.dataexport.serializers.Serializers;
+import com.easemob.dataexport.utils.Schema;
 
 public class ExportUserPasswordInfo {
 

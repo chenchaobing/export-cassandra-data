@@ -1,11 +1,11 @@
-package com.easemob.dataexport.util;
+package com.easemob.dataexport.utils;
 
-import static com.easemob.dataexport.util.ConversionUtils.string;
-import static com.easemob.dataexport.util.ConversionUtils.uuid;
+import static com.easemob.dataexport.utils.ConversionUtils.string;
+import static com.easemob.dataexport.utils.ConversionUtils.uuid;
 
 import java.nio.ByteBuffer;
 
-import com.easemob.dataexport.util.JsonUtils;
+import com.easemob.dataexport.utils.JsonUtils;
 
 
 public class Schema {

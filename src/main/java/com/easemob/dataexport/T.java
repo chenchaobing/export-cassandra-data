@@ -12,9 +12,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.smile.SmileFactory;
 
-import com.easemob.dataexport.cassandra.Serializers;
-import com.easemob.dataexport.util.ConversionUtils;
-import com.easemob.dataexport.util.JsonUtils;
+import com.easemob.dataexport.serializers.Serializers;
+import com.easemob.dataexport.utils.ConversionUtils;
+import com.easemob.dataexport.utils.JsonUtils;
 
 public class T {
     private static SmileFactory smile = new SmileFactory();

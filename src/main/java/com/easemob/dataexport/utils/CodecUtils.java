@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.easemob.dataexport.util;
+package com.easemob.dataexport.utils;
 
 
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
 
-import static com.easemob.dataexport.util.ConversionUtils.bytes;
+import static com.easemob.dataexport.utils.ConversionUtils.bytes;
 
 
 public class CodecUtils {
