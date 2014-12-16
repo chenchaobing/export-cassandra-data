@@ -1,9 +1,7 @@
 package com.easemob.dataexport;
 
-import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
 import static com.easemob.dataexport.utils.StringUtils.hexToByteBuffer;
-import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,6 +16,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import com.easemob.dataexport.serializers.Serializers;
 import com.easemob.dataexport.utils.Schema;
+import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 
 public class ExportUserPasswordInfo {
 
@@ -32,13 +31,6 @@ public class ExportUserPasswordInfo {
 		br.close();
 	}
 	
-	public static String decodeHexString(String hexString){
-		byte[] bytes = hexToBytes(hexString);
-		ByteBuffer byteBuffer = bytebuffer(bytes);
-		String value = Serializers.se.fromByteBuffer(byteBuffer);
-		return value;
-	}
-	
 	public static void dealData(String data){
 		try{
 			ObjectNode objectNode = toObjectNode(data);
@@ -46,25 +38,17 @@ public class ExportUserPasswordInfo {
 				return ;
 			}
 			String key = objectNode.path("key").asText();
-			String appUkey = key.substring(0 , 32);
-			byte[] bbs = hexToBytes(appUkey);
-			ByteBuffer bf = bytebuffer(bbs);
+			UUID appUuid = (UUID)decodeHexString(key.substring(0 , 32), Serializers.ue);
+			String value = (String)decodeHexString(key.substring(32) , Serializers.se);
 			
-			UUID appUuid = Serializers.ue.fromByteBuffer(bf);
-			System.out.println(appUuid);
-			
-			String rowKey = key.substring(32);
-			byte[] bytes = hexToBytes(rowKey);
-			ByteBuffer byteBuffer = bytebuffer(bytes);
-			String value = Serializers.se.fromByteBuffer(byteBuffer);
 			String[] ss = value.split(":");
-			
-			
-			if(ss[1].equals("credentials")){
-				System.out.println(value);
+			String userUuid = ss[0];
+			String credentials = ss[1];
+			if(credentials.equals("credentials")){
+				System.out.println(appUuid + "|" + userUuid + "|" + credentials);
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 				for( JsonNode jsonNode : arrayNode){
-					String propertyName = decodeHexString(jsonNode.get(0).asText());
+					String propertyName = (String)decodeHexString(jsonNode.get(0).asText() , Serializers.se);
 					ByteBuffer propertyValueByteBuffer = hexToByteBuffer(jsonNode.get(1).asText());
 					@SuppressWarnings("unchecked")
 					Map<String , Object> valueMap = (Map<String , Object>)Schema.deserializeEntityProperty(propertyName, propertyValueByteBuffer);

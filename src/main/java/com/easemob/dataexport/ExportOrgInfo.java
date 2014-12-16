@@ -3,7 +3,6 @@ package com.easemob.dataexport;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -11,9 +10,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.easemob.dataexport.cache.RedisApI;
 import com.easemob.dataexport.serializers.Serializers;
 
-import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
-import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
 
 public class ExportOrgInfo {
 
@@ -34,11 +32,9 @@ public class ExportOrgInfo {
 			if(objectNode == null){
 				return ;
 			}
+			
 			String key = objectNode.path("key").asText();
-			String rowKey = key.substring(32);
-			byte[] bytes = hexToBytes(rowKey);
-			ByteBuffer byteBuffer = bytebuffer(bytes);
-			String value = Serializers.se.fromByteBuffer(byteBuffer);
+			String value = (String)decodeHexString(key.substring(32) , Serializers.se);
 			String[] ss = value.split(":");
 			
 			if(ss[1].equals("groups") && ss[2].equals("path")){
@@ -46,8 +42,8 @@ public class ExportOrgInfo {
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 				String uuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				System.out.println(orgname + "|" + uuid +"|"+ timestamp);
 				
+				System.out.println(orgname + "|" + uuid +"|"+ timestamp);
 				RedisApI.set(orgname , uuid);
 				RedisApI.set(uuid, orgname);
 			}

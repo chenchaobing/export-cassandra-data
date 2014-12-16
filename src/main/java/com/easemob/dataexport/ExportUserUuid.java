@@ -3,7 +3,6 @@ package com.easemob.dataexport;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -11,9 +10,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.easemob.dataexport.cache.RedisApI;
 import com.easemob.dataexport.serializers.Serializers;
 
-import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
+import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
-import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
 
 public class ExportUserUuid {
 
@@ -35,27 +33,22 @@ public class ExportUserUuid {
 				return ;
 			}
 			String key = objectNode.path("key").asText();
-			String rowKey = key.substring(32);
-			byte[] bytes = hexToBytes(rowKey);
-			ByteBuffer byteBuffer = bytebuffer(bytes);
-			String value = Serializers.se.fromByteBuffer(byteBuffer);
+			String value = (String)decodeHexString(key.substring(32) , Serializers.se);
 			String[] ss = value.split(":");
 			
 			String appUuid = ss[0];
-			
 			if(ss[1].equals("users") && ss[2].equals("username")){
 				String username = ss[3];
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
-				String uuid = arrayNode.get(0).get(0).asText();
+				String userUuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				System.out.println(username + "|" + uuid +"|"+ timestamp);
 				
 				String orgAppName = RedisApI.get(appUuid);
-				String userNameInApp = orgAppName + "_" + username; 
+				String orgAppUserName = orgAppName + "_" + username; 
 				
-				System.out.println(userNameInApp);
-				RedisApI.set(userNameInApp , uuid);
-				RedisApI.set(uuid, userNameInApp);
+				System.out.println(orgAppUserName + "|" + userUuid + "|" + timestamp);
+				RedisApI.set(orgAppUserName , userUuid);
+				RedisApI.set(userUuid, orgAppUserName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

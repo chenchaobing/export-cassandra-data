@@ -13,10 +13,9 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.easemob.dataexport.serializers.Serializers;
 import com.easemob.dataexport.utils.Schema;
 
-import static com.easemob.dataexport.utils.ConversionUtils.bytebuffer;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
 import static com.easemob.dataexport.utils.StringUtils.hexToByteBuffer;
-import static com.easemob.dataexport.utils.StringUtils.hexToBytes;
+import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 
 public class ExportUserProperties {
 
@@ -35,8 +34,8 @@ public class ExportUserProperties {
 		try{
 			ArrayNode arrayNode = (ArrayNode) jsonData.path("columns");
 			for(JsonNode jsonNode : arrayNode){
-				if(decodeHexString(jsonNode.get(0).asText()).equals("type")){
-					if(decodeHexString(jsonNode.get(1).asText()).equals("user")){
+				if(decodeHexString(jsonNode.get(0).asText(), Serializers.se).equals("type") ){
+					if(decodeHexString(jsonNode.get(1).asText() , Serializers.se).equals("user")){
 						return true;
 					}
 				}
@@ -46,13 +45,6 @@ public class ExportUserProperties {
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	public static String decodeHexString(String hexString){
-		byte[] bytes = hexToBytes(hexString);
-		ByteBuffer byteBuffer = bytebuffer(bytes);
-		String value = Serializers.se.fromByteBuffer(byteBuffer);
-		return value;
 	}
 	
 	public static void dealData(String data){
@@ -66,17 +58,14 @@ public class ExportUserProperties {
 			}
 			
 			String key = objectNode.path("key").asText();
-			String rowKey = key.substring(32);
-			byte[] bytes = hexToBytes(rowKey);
-			ByteBuffer byteBuffer = bytebuffer(bytes);
-			UUID uuid = Serializers.ue.fromByteBuffer(byteBuffer);
+			UUID userUuid = (UUID)decodeHexString(key.substring(32), Serializers.ue);
+			
 			String username = "";
 			String nickname = "";
 			ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 			for(JsonNode jsonNode : arrayNode){
-				String propertyName = decodeHexString(jsonNode.get(0).asText());
+				String propertyName = (String)decodeHexString(jsonNode.get(0).asText(), Serializers.se);
 				ByteBuffer propertyValueByteBuffer = hexToByteBuffer(jsonNode.get(1).asText());
-				
 				if(propertyName.equals("username")){
 					username = (String)Schema.deserializeEntityProperty("username", propertyValueByteBuffer);
 				}
@@ -84,7 +73,7 @@ public class ExportUserProperties {
 					nickname = (String)Schema.deserializeEntityProperty("nickname", propertyValueByteBuffer);
 				}
 			}
-			System.out.println(uuid + "|" + username + "|" + nickname);
+			System.out.println(userUuid + "|" + username + "|" + nickname);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
