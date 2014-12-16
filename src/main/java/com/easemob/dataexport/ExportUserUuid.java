@@ -18,7 +18,7 @@ import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
 public class ExportUserUuid {
 
 	public static void main(String[] args) throws Exception {
-		String filePath = "app.json";
+		String filePath = "entity_unique.json";
 		InputStream inputStream = ExportUserUuid.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
@@ -41,15 +41,21 @@ public class ExportUserUuid {
 			String value = Serializers.se.fromByteBuffer(byteBuffer);
 			String[] ss = value.split(":");
 			
+			String appUuid = ss[0];
+			
 			if(ss[1].equals("users") && ss[2].equals("username")){
-				String orgname = ss[3];
+				String username = ss[3];
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 				String uuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				System.out.println(orgname + "|" + uuid +"|"+ timestamp);
+				System.out.println(username + "|" + uuid +"|"+ timestamp);
 				
-				RedisApI.set(orgname , uuid);
-				RedisApI.set(uuid, orgname);
+				String orgAppName = RedisApI.get(appUuid);
+				String userNameInApp = orgAppName + "_" + username; 
+				
+				System.out.println(userNameInApp);
+				RedisApI.set(userNameInApp , uuid);
+				RedisApI.set(uuid, userNameInApp);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

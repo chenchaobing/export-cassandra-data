@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 package com.easemob.dataexport.util;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
 import static com.easemob.dataexport.util.ConversionUtils.string;
 
 
@@ -24,6 +26,12 @@ public class StringUtils extends org.apache.commons.lang.StringUtils {
 
 //  private static final Logger LOG = LoggerFactory.getLogger( StringUtils.class );
 
+	public static ByteBuffer hexToByteBuffer(String hexString){
+		byte[] bytes = hexToBytes(hexString);
+		ByteBuffer byteBuffer = bytebuffer(bytes);
+		return byteBuffer;
+	}
+	
 	public static byte[] hexToBytes(String hexString) {
 	    char[] hex = hexString.toCharArray();
 	    int length = hex.length / 2;

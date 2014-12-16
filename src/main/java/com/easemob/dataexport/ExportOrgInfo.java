@@ -18,7 +18,7 @@ import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
 public class ExportOrgInfo {
 
 	public static void main(String[] args) throws Exception {
-		String filePath = "org.json";
+		String filePath = "entity_unique.json";
 		InputStream inputStream = ExportOrgInfo.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;

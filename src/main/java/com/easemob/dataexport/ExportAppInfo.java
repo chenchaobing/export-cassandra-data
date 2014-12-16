@@ -18,7 +18,7 @@ import static com.easemob.dataexport.util.ConversionUtils.bytebuffer;
 public class ExportAppInfo {
 
 	public static void main(String[] args) throws Exception {
-		String filePath = "app.json";
+		String filePath = "entity_unique.json";
 		InputStream inputStream = ExportAppInfo.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
@@ -42,14 +42,14 @@ public class ExportAppInfo {
 			String[] ss = value.split(":");
 			
 			if(ss[1].equals("applications") && ss[2].equals("name")){
-				String orgname = ss[3];
+				String appname = ss[3];
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 				String uuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				System.out.println(orgname + "|" + uuid +"|"+ timestamp);
+				System.out.println(appname + "|" + uuid +"|"+ timestamp);
 				
-				RedisApI.set(orgname , uuid);
-				RedisApI.set(uuid, orgname);
+				RedisApI.set(appname , uuid);
+				RedisApI.set(uuid, appname);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

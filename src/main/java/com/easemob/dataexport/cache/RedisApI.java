@@ -27,6 +27,12 @@ public class RedisApI {
         }
     }
       
+    public static String get(String key){
+    	try (Jedis jedis = jedisPool.getResource()) {
+    		return jedis.get(key);    		
+    	}
+    }
+    
     public static void set(String key , String value){  
         try (Jedis jedis = jedisPool.getResource()) {
         	jedis.set(key, value);
