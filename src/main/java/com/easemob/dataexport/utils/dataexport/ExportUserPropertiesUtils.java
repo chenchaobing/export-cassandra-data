@@ -1,4 +1,4 @@
-package com.easemob.dataexport;
+package com.easemob.dataexport.utils.dataexport;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -20,11 +20,11 @@ import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
 import static com.easemob.dataexport.utils.StringUtils.hexToByteBuffer;
 import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 
-public class ExportUserProperties {
+public class ExportUserPropertiesUtils {
 
 	public static void main(String[] args) throws Exception {
 		String filePath = "entity_properties.json";
-		InputStream inputStream = ExportUserProperties.class.getClassLoader().getResourceAsStream(filePath);
+		InputStream inputStream = ExportUserPropertiesUtils.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
 		while((line = br.readLine()) != null){
@@ -52,7 +52,7 @@ public class ExportUserProperties {
 	
 	private static final String USER_ACTIVATED = "activated";
     private static final String USER_CREATED = "created";
-    private static final String USER_MODIFIED = "modified";
+//    private static final String USER_MODIFIED = "modified";
     private static final String USER_NICKNAME = "nickname";
     private static final String USER_TYPE = "type";
     private static final String USER_NAME = "username";
@@ -68,7 +68,7 @@ public class ExportUserProperties {
 				return ;
 			}
 			
-			String key = objectNode.path("key").asText();
+//			String key = objectNode.path("key").asText();
 //			UUID uid = (UUID)decodeHexString(key.substring(32), Serializers.ue);
 			
 			ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");

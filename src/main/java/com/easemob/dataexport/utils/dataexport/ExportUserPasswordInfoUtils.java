@@ -1,4 +1,4 @@
-package com.easemob.dataexport;
+package com.easemob.dataexport.utils.dataexport;
 
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
 import static com.easemob.dataexport.utils.StringUtils.hexToByteBuffer;
@@ -18,11 +18,11 @@ import com.easemob.dataexport.serializers.Serializers;
 import com.easemob.dataexport.utils.Schema;
 import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 
-public class ExportUserPasswordInfo {
+public class ExportUserPasswordInfoUtils {
 
 	public static void main(String[] args) throws Exception {
 		String filePath = "entity_dictionaries.json";
-		InputStream inputStream = ExportOrgInfo.class.getClassLoader().getResourceAsStream(filePath);
+		InputStream inputStream = ExportOrgIdUtils.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
 		while((line = br.readLine()) != null){

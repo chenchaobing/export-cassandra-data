@@ -1,4 +1,4 @@
-package com.easemob.dataexport;
+package com.easemob.dataexport.utils.dataexport;
 
 import static com.easemob.dataexport.utils.ConversionUtils.getLong;
 import static com.easemob.dataexport.utils.ConversionUtils.string;
@@ -23,11 +23,11 @@ import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.security.AuthPrincipalType;
 import com.easemob.dataexport.serializers.Serializers;
 
-public class ExportTokenInfo {
+public class ExportTokenInfoUtils {
 
 	public static void main(String[] args) throws Exception {
 		String filePath = "token.json";
-		InputStream inputStream = ExportOrgInfo.class.getClassLoader().getResourceAsStream(filePath);
+		InputStream inputStream = ExportOrgIdUtils.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
 		while((line = br.readLine()) != null){

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-import com.easemob.dataexport.ExportAppInfo;
 
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
@@ -24,7 +23,7 @@ public class EasemobCache {
 		if(easemobCache != null){
 			return easemobCache;
 		}
-		synchronized (ExportAppInfo.class) {
+		synchronized (EasemobCache.class) {
 			if(easemobCache == null){
 				context = new GenericXmlApplicationContext();
 				context.setValidating(false);

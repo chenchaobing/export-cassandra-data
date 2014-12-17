@@ -1,4 +1,4 @@
-package com.easemob.dataexport;
+package com.easemob.dataexport.utils.dataexport;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -10,14 +10,15 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.serializers.Serializers;
 
-import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
+import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 
-public class ExportUserUuid {
+public class ExportAppIdUtils {
 
+	
 	public static void main(String[] args) throws Exception {
 		String filePath = "entity_unique.json";
-		InputStream inputStream = ExportUserUuid.class.getClassLoader().getResourceAsStream(filePath);
+		InputStream inputStream = ExportAppIdUtils.class.getClassLoader().getResourceAsStream(filePath);
 		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
 		while((line = br.readLine()) != null){
@@ -35,21 +36,14 @@ public class ExportUserUuid {
 			String key = objectNode.path("key").asText();
 			String value = (String)decodeHexString(key.substring(32) , Serializers.se);
 			String[] ss = value.split(":");
-			
-			String appUUID = ss[0];
-			if(ss[1].equals("users") && ss[2].equals("username")){
-				String username = ss[3];
+			if(ss[1].equals("applications") && ss[2].equals("name")){
+				String appname = ss[3];
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
-				String userUUID = arrayNode.get(0).get(0).asText();
+				String uuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				
-				System.out.println(appUUID + "|" + userUUID + "|" + timestamp);
-				EasemobCache.getInstance().setUserId(appUUID, userUUID, username);
-//				String orgAppName = RedisApI.get(appUuid);
-//				String orgAppUserName = orgAppName + "_" + username; 
-				
-//				RedisApI.set(orgAppUserName , userUUID);
-//				RedisApI.set(userUUID, orgAppUserName);
+				appname = appname.replace('/', '#');
+				System.out.println(appname + "|" + uuid +"|"+ timestamp);
+				EasemobCache.getInstance().setApplicationOrOrganizationId(appname , uuid);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
