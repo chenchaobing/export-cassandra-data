@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.serializers.Serializers;
 import com.easemob.dataexport.utils.Schema;
 
@@ -47,6 +50,14 @@ public class ExportUserProperties {
 		}
 	}
 	
+	private static final String USER_ACTIVATED = "activated";
+    private static final String USER_CREATED = "created";
+    private static final String USER_MODIFIED = "modified";
+    private static final String USER_NICKNAME = "nickname";
+    private static final String USER_TYPE = "type";
+    private static final String USER_NAME = "username";
+    private static final String USER_UUID = "uuid";
+	
 	public static void dealData(String data){
 		try{
 			ObjectNode objectNode = toObjectNode(data);
@@ -58,22 +69,28 @@ public class ExportUserProperties {
 			}
 			
 			String key = objectNode.path("key").asText();
-			UUID userUuid = (UUID)decodeHexString(key.substring(32), Serializers.ue);
+//			UUID uid = (UUID)decodeHexString(key.substring(32), Serializers.ue);
 			
-			String username = "";
-			String nickname = "";
 			ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
+			Map<String , Object> userInfo = new HashMap<String , Object>();
 			for(JsonNode jsonNode : arrayNode){
 				String propertyName = (String)decodeHexString(jsonNode.get(0).asText(), Serializers.se);
 				ByteBuffer propertyValueByteBuffer = hexToByteBuffer(jsonNode.get(1).asText());
-				if(propertyName.equals("username")){
-					username = (String)Schema.deserializeEntityProperty("username", propertyValueByteBuffer);
-				}
-				if(propertyName.equals("nickname")){
-					nickname = (String)Schema.deserializeEntityProperty("nickname", propertyValueByteBuffer);
-				}
+				Object propertyValue = Schema.deserializeEntityProperty(propertyName, propertyValueByteBuffer);
+				userInfo.put(propertyName, propertyValue);
 			}
-			System.out.println(userUuid + "|" + username + "|" + nickname);
+			
+			String username = (String)userInfo.get(USER_NAME);
+			String nickname = (String)userInfo.get(USER_NICKNAME);
+			boolean activated = (Boolean)userInfo.get(USER_ACTIVATED);
+			long created = (Long)userInfo.get(USER_CREATED);
+			UUID userUUID = (UUID)userInfo.get(USER_UUID);
+			String type = (String)userInfo.get(USER_TYPE);
+			
+			if(type.equals("user")){
+				System.out.println(username + "|" + nickname + "|" + activated + "|" + created + "|" + userUUID +"|"+ type);
+				EasemobCache.getInstance().saveUserInfo(username, nickname, activated, created, userUUID, type);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}

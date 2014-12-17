@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.easemob.dataexport.cache.RedisApI;
+import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.serializers.Serializers;
 
 import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
@@ -36,19 +36,20 @@ public class ExportUserUuid {
 			String value = (String)decodeHexString(key.substring(32) , Serializers.se);
 			String[] ss = value.split(":");
 			
-			String appUuid = ss[0];
+			String appUUID = ss[0];
 			if(ss[1].equals("users") && ss[2].equals("username")){
 				String username = ss[3];
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
-				String userUuid = arrayNode.get(0).get(0).asText();
+				String userUUID = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
 				
-				String orgAppName = RedisApI.get(appUuid);
-				String orgAppUserName = orgAppName + "_" + username; 
+				System.out.println(appUUID + "|" + userUUID + "|" + timestamp);
+				EasemobCache.getInstance().setUserId(appUUID, userUUID, username);
+//				String orgAppName = RedisApI.get(appUuid);
+//				String orgAppUserName = orgAppName + "_" + username; 
 				
-				System.out.println(orgAppUserName + "|" + userUuid + "|" + timestamp);
-				RedisApI.set(orgAppUserName , userUuid);
-				RedisApI.set(userUuid, orgAppUserName);
+//				RedisApI.set(orgAppUserName , userUUID);
+//				RedisApI.set(userUUID, orgAppUserName);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

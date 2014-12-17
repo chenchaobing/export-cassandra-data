@@ -41,7 +41,7 @@ public class ExportAppInfo {
 				ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 				String uuid = arrayNode.get(0).get(0).asText();
 				String timestamp = arrayNode.get(0).get(2).asText();
-				
+				appname = appname.replace('/', '#');
 				System.out.println(appname + "|" + uuid +"|"+ timestamp);
 				EasemobCache.getInstance().setApplicationOrOrganizationId(appname , uuid);
 			}

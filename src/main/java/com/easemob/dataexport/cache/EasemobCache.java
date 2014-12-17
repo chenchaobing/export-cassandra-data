@@ -44,14 +44,36 @@ public class EasemobCache {
      @Qualifier("slaveJedisPool")
      private ShardedJedisPool slaveJedisPool;
      
-     public String getOrgUuid(String orgname){
-    	 try(ShardedJedis jedis = slaveJedisPool.getResource()){
-    		String uuid = jedis.get(orgname);
-    		return uuid;
+     public void setUserId(String appUUID , String userUUID , String username){
+    	 if(isEmpty(appUUID) || isEmpty(userUUID) || isEmpty(username) ){
+    		 return;
+    	 } 
+    	 try{
+    		 String appname = getAppnameByAppUUID(appUUID);
+    		 if(isEmpty(appname)){
+    			 return;
+    		 }
+    		 String value = appname + "_" + username;
+    		 try(ShardedJedis jedis = jedisPool.getResource()){
+    			 jedis.set(userUUID, value);
+    		 }
     	 }catch(Exception e){
     		 e.printStackTrace();
     	 }
-    	 return null;
+     }
+     
+     public String getAppnameByAppUUID(String uuid){
+    	 if (isEmpty(uuid)) {
+             return null;
+         }
+         try {
+             try (ShardedJedis jedis = slaveJedisPool.getResource()) {
+                 return jedis.get(uuid);
+             }
+         } catch (Exception e) {
+        	 e.printStackTrace();
+         }
+         return null;
      }
      
      public void setApplicationOrOrganizationId(String name, String uuid) {
@@ -91,6 +113,35 @@ public class EasemobCache {
                  jedis.hmset(key, map);
              }
          } catch (Exception e) {
+        	 e.printStackTrace();
+         }
+     }
+     
+     public void saveUserInfo(final String username , final String nickname, final Boolean activated, Long created, UUID userUUID, final String type) {
+         if (isEmpty(username) || isEmpty(activated) || isEmpty(created) || isEmpty(userUUID) || isEmpty(type)) {
+             return ;
+         }
+         try {
+        	 try (ShardedJedis jedis = jedisPool.getResource()){
+        		 String orgAppUser = jedis.get(userUUID.toString());
+        		 if(isEmpty(orgAppUser)){
+        			 return ;
+        		 }
+        		 String key = orgAppUser;
+        		 Map<String, String> map = new HashMap<String, String>(4);
+                 map.put("atd", String.valueOf(activated));
+                 map.put("ctd", String.valueOf(created));
+                 map.put("u", userUUID.toString());
+                 map.put("auth", "au:" + type);
+                 if(!isEmpty(nickname)){
+                	 map.put("nickname", nickname);
+                 }
+                 
+                 System.out.println(key + "|" + map);
+                 
+                 jedis.hmset(key, map);
+        	 }
+         }catch(Exception e){
         	 e.printStackTrace();
          }
      }
