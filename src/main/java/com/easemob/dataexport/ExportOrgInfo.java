@@ -7,14 +7,14 @@ import java.io.InputStreamReader;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.easemob.dataexport.cache.RedisApI;
+import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.serializers.Serializers;
 
 import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexString;
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
 
 public class ExportOrgInfo {
-
+	
 	public static void main(String[] args) throws Exception {
 		String filePath = "entity_unique.json";
 		InputStream inputStream = ExportOrgInfo.class.getClassLoader().getResourceAsStream(filePath);
@@ -44,8 +44,7 @@ public class ExportOrgInfo {
 				String timestamp = arrayNode.get(0).get(2).asText();
 				
 				System.out.println(orgname + "|" + uuid +"|"+ timestamp);
-				RedisApI.set(orgname , uuid);
-				RedisApI.set(uuid, orgname);
+				EasemobCache.getInstance().setApplicationOrOrganizationId(orgname , uuid);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

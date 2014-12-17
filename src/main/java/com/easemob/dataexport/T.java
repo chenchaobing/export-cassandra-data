@@ -1,15 +1,9 @@
 package com.easemob.dataexport;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.UUID;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 import org.codehaus.jackson.smile.SmileFactory;
 
 import com.easemob.dataexport.serializers.Serializers;

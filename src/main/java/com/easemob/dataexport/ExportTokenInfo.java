@@ -19,6 +19,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
+import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.security.AuthPrincipalType;
 import com.easemob.dataexport.serializers.Serializers;
 
@@ -54,7 +55,7 @@ public class ExportTokenInfo {
 				return ;
 			}
 			String key = objectNode.path("key").asText();
-			UUID tokenUuid = (UUID)decodeHexString(key , Serializers.ue);
+			UUID tokenUUID = (UUID)decodeHexString(key , Serializers.ue);
 			ArrayNode arrayNode = (ArrayNode) objectNode.path("columns");
 			Map<String , ByteBuffer> columns = new HashMap<String , ByteBuffer>();
 			for( JsonNode jsonNode : arrayNode){
@@ -62,13 +63,13 @@ public class ExportTokenInfo {
 				ByteBuffer propertyValueByteBuffer = hexToByteBuffer(jsonNode.get(1).asText());
 				columns.put(propertyName, propertyValueByteBuffer);
 			}
-	        String type = string(columns.get(TOKEN_TYPE));
+	        String tokenType = string(columns.get(TOKEN_TYPE));
 	        long created = getLong(columns.get(TOKEN_CREATED));
 	        long accessed = getLong(columns.get(TOKEN_ACCESSED));
 	        long inactive = getLong(columns.get(TOKEN_INACTIVE));
 	        long duration = getLong(columns.get(TOKEN_DURATION));
-	        UUID appUuid = null;
-	        UUID entityUuid = null;
+	        UUID applicationId = null;
+	        UUID userId = null;
 	        String principalTypeStr = string(columns.get(TOKEN_PRINCIPAL_TYPE));
 	        AuthPrincipalType principalType = null;
 	        if (principalTypeStr != null) {
@@ -84,10 +85,11 @@ public class ExportTokenInfo {
 	            }
 	        }
 	        if (principalType != null) {
-	        	appUuid = uuid(columns.get(TOKEN_APPLICATION));
-	            entityUuid = uuid(columns.get(TOKEN_ENTITY));
+	        	applicationId = uuid(columns.get(TOKEN_APPLICATION));
+	        	userId = uuid(columns.get(TOKEN_ENTITY));
 	        }
-			System.out.println(tokenUuid + "|" + type + "|" + created + "|" + accessed + "|" + inactive + "|" + duration + "|" + appUuid + "|" + entityUuid);
+	        System.out.println(tokenUUID + "|" + tokenType + "|" + principalType + "|" + created + "|" + applicationId + "|" + userId + "|" + duration + "|" + accessed + "|" + inactive);
+	        EasemobCache.getInstance().saveToken(tokenUUID, tokenType, applicationId, principalTypeStr , userId, created, duration);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

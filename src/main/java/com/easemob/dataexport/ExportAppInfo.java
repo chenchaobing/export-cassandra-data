@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 
-import com.easemob.dataexport.cache.RedisApI;
+import com.easemob.dataexport.cache.EasemobCache;
 import com.easemob.dataexport.serializers.Serializers;
 
 import static com.easemob.dataexport.utils.JsonUtils.toObjectNode;
@@ -15,6 +15,7 @@ import static com.easemob.dataexport.utils.CassandraDataParseUtils.decodeHexStri
 
 public class ExportAppInfo {
 
+	
 	public static void main(String[] args) throws Exception {
 		String filePath = "entity_unique.json";
 		InputStream inputStream = ExportAppInfo.class.getClassLoader().getResourceAsStream(filePath);
@@ -42,8 +43,7 @@ public class ExportAppInfo {
 				String timestamp = arrayNode.get(0).get(2).asText();
 				
 				System.out.println(appname + "|" + uuid +"|"+ timestamp);
-				RedisApI.set(appname , uuid);
-				RedisApI.set(uuid, appname);
+				EasemobCache.getInstance().setApplicationOrOrganizationId(appname , uuid);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
